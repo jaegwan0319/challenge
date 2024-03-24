@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공 충돌 시뮬레이션</title>
+  <style>
+    #container {
+      width: 600px;
+      height: 400px;
+      border-right: none;
+      border-top: none;
+      border-left: none;
+      border-bottom: 1px solid black;
+      /* border: 1px solid black; */
+      position: relative;
+      margin: 0 auto;
+    }
+    .ball {
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 0;
+    }
+    #ball2 {
+      left: 570px; /* container의 가로 길이에서 ball2의 너비를 뺀 만큼 */
+    }
+  </style>
+</head>
+<body>
+  <h1>공 충돌 시뮬레이션</h1>
+  <div>
+    <label for="acceleration1">왼쪽 공 가속도 입력:</label>
+    <input type="number" id="acceleration1" step="0.1" min="-2" max="2">
+    <button onclick="applyAcceleration(1)">적용</button>
+  </div>
+  <div>
+    <label for="acceleration2">오른쪽 공 가속도 입력:</label>
+    <input type="number" id="acceleration2" step="0.1" min="-2" max="2">
+    <button onclick="applyAcceleration(2)">적용</button>
+  </div>
+  <div id="container">
+    <div class="ball" id="ball1"></div>
+    <div class="ball" id="ball2"></div>
+  </div>
+  <button onclick="startSimulation()">시뮬레이션 시작</button>
+  <button onclick="resetSimulation()">리셋</button>
+
+  <script>
+    let ball1 = document.getElementById('ball1');
+    let ball2 = document.getElementById('ball2');
+    let container = document.getElementById('container');
+    let velocity1 = 0;
+    let velocity2 = 0;
+    let acceleration1 = 0;
+    let acceleration2 = 0;
+    let intervalId = null;
+
+    function applyAcceleration(ballNum) {
+      let accelerationInput = parseFloat(document.getElementById(`acceleration${ballNum}`).value);
+      if (ballNum === 1) {
+        acceleration1 = accelerationInput;
+      } else if (ballNum === 2) {
+        acceleration2 = accelerationInput;
+      }
+    }
+
+    let isSimulatingRunning = false;
+
+    function startSimulation() {
+      if (!isSimulatingRunning) {
+        intervalId = setInterval(moveBalls, 50);
+        isSimulatingRunning = true;
+      } else {
+        alert("reset버튼을 누르시오.");
+      }
+    }
+
+    function moveBalls() {
+      let containerWidth = container.clientWidth;
+      let ball1Right = parseFloat(ball1.style.left) + ball1.clientWidth;
+      let ball2Left = parseFloat(ball2.style.left);
+      
+      if (isNaN(ball1Right) || isNaN(ball2Left)) {
+        return; // 위치 정보가 NaN이면 아무 것도 하지 않음
+      }
+      
+      if (ball1Right >= ball2Left) {
+        alert("충돌 발생!");
+        resetSimulation();
+        return;
+      }
+
+      velocity1 += acceleration1;
+      velocity2 += acceleration2;
+
+      let left1 = parseFloat(ball1.style.left) || 0;
+      left1 += velocity1;
+
+      let left2 = parseFloat(ball2.style.left) || 0;
+      left2 -= velocity2;
+
+      if (left1 <= 0) {
+        left1 = 0;
+        velocity1 *= -0.9; // 반발력
+      }
+
+      if (left2 <= 0) {
+        left2 = 0;
+        velocity2 *= -0.9; // 반발력
+      }
+
+      ball1.style.left = left1 + 'px';
+      ball2.style.left = left2 + 'px'; 
+    }
+
+    function resetSimulation() {
+      clearInterval(intervalId);
+      isSimulatingRunning = false;
+      ball1.style.left = '0px';
+      ball2.style.left = '570px'; // 초기 위치 설정
+      velocity1 = 0;
+      velocity2 = 0;
+      acceleration1 = 0;
+      acceleration2 = 0;
+    }
+  </script>
+</body>
+</html>
