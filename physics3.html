@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .ball{
+            position: none;
+            cursor: pointer;
+        }
+        #ball1{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: red;
+            left: 110px;
+            mix-blend-mode: lighten ;
+        }
+        #ball2{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: blue;
+            mix-blend-mode: lighten ;
+        }
+        #ball3{
+            width: 100px;
+            height: 100px;
+            top: 110px;
+            border-radius: 50%;
+            background-color: greenyellow;
+            mix-blend-mode: lighten ;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>빛의 합성</h1>
+        <div class="ball" id="ball1"></div>
+        <div class="ball" id="ball2"></div>
+        <div class="ball" id="ball3"></div>
+    </div>
+    <script>
+    var balls = document.getElementsByClassName('ball');
+
+    // 각 공 요소에 대해 반복하여 드래그 기능을 설정합니다.
+    for (var i = 0; i < balls.length; i++) {
+      var ball = balls[i];
+      
+      ball.onmousedown = function(event) {
+        var ball = this;
+
+        let shiftX = event.clientX - ball.getBoundingClientRect().left;
+        let shiftY = event.clientY - ball.getBoundingClientRect().top;
+
+        ball.style.position = 'absolute';
+        ball.style.zIndex = 1000;
+        document.body.append(ball);
+
+        moveAt(event.pageX, event.pageY);
+
+        // 초기 이동을 고려한 좌표 (pageX, pageY)에서
+        // 공을 이동합니다.
+        function moveAt(pageX, pageY) {
+          ball.style.left = pageX - shiftX + 'px';
+          ball.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY);
+        }
+
+        // mousemove로 공을 움직입니다.
+        document.addEventListener('mousemove', onMouseMove);
+
+        // 공을 드롭하고, 불필요한 핸들러를 제거합니다.
+        ball.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          ball.onmouseup = null;
+        };
+      };
+
+      ball.ondragstart = function() {
+        return false;
+      };
+    }
+
+    </script>
+    
+</body>
+</html>
