@@ -57,7 +57,7 @@
     let intervalId = null;
 
     function applyAcceleration() {
-      let accelerationInput = document.getElementById('acceleration').value * 5 * 0.01;
+      let accelerationInput = document.getElementById('acceleration').value * 5;
       acceleration = parseFloat(accelerationInput);
     }
 
@@ -74,9 +74,11 @@
     }
 //                                        밀리초 단위인데, 1초= 1000밀리초
     function moveBall() {
-      velocity += acceleration;
+      //velocity += acceleration;
       let left = parseFloat(ball.style.left) || 0;
-      left += velocity;
+      //left += velocity;
+      left += velocity * 0.01 + 1 / 2 * acceleration * 0.01 * 0.01;
+      velocity += acceleration * 0.01;
       // if (bottom >= container.clientHeight - ball.clientHeight) {
       //   bottom = container.clientHeight - ball.clientHeight;
       //   velocity *= -0.9; // 반발력

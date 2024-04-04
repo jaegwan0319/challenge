@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>빛의 합성 색깔</title>
+</head>
+<body>
+  <h1>빛의 합성 색깔</h1>
+  <div id="color" style="width: 100px; height: 100px;"></div>
+
+  <script>
+    // 합성하고자 하는 색상의 RGB 값을 지정합니다.
+    const red = {r: 255, g: 0, b: 0}; // 빨간색
+    const green = {r: 0, g: 255, b: 0}; // 초록색
+    const blue = {r: 0, g: 0, b: 255}; // 파란색
+
+    // 빨간색과 초록색을 합성하여 노란색을 만듭니다.
+    const yellow = {
+      r: red.r + green.r,
+      g: red.g + green.g,
+      b: red.b + green.b
+    };
+
+    // 합성된 색상을 HTML 요소에 적용합니다.
+    const colorDiv = document.getElementById('color');
+    colorDiv.style.backgroundColor = `rgb(${yellow.r}, ${yellow.g}, ${yellow.b})`;
+  </script>
+</body>
+</html>
