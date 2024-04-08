@@ -12,7 +12,6 @@
       border-top: none;
       border-left: none;
       border-bottom: 1px solid black;
-      /* border: 1px solid black; */
       position: relative;
       margin: 0 auto;
     }
@@ -22,8 +21,8 @@
       background-color: red;
       border-radius: 50%;
       position: absolute;
-       left: 0; /* bottom -> left 로 수정 */
-       bottom: 0;
+      left : 0;
+      bottom: 0;
     }
     #sign {
       background-color: black;
@@ -33,18 +32,27 @@
       right: 0px;
       bottom: 0px;
     }
+    #sign2{
+      width: 20px;
+      bottom : 0px;
+      right : 1px;
+      position: absolute;
+      height: 10px;
+      border-color: black;
+    }
   </style>
 </head>
 <body>
   <h1>가속도에 따른 운동 시뮬레이터</h1>
   <div>
     <label for="acceleration">가속도 입력:</label>
-    <input type="number" id="acceleration" step="0.1" min="-2" max="2">
+    <input type="number" id="acceleration" step="0.1">
     <button onclick="applyAcceleration()">적용</button>
   </div>
   <div id="container">
     <div id="ball"></div>
     <div id="sign"></div>
+    <div id="sign2">100m</div>
   </div>
   <button onclick="startSimulation()">시뮬레이션 시작</button>
   <button onclick="resetSimulation()">리셋</button>
@@ -52,6 +60,9 @@
   <script>
     let ball = document.getElementById('ball');
     let container = document.getElementById('container');
+    let sign = document.getElementById('sign');
+    let startTime = 0;
+    let endTime = 0;
     let velocity = 0;
     let acceleration = 0;
     let intervalId = null;
@@ -64,34 +75,43 @@
     let isSimulatingRunning = false;
 
     function startSimulation() {
-      if(!  isSimulatingRunning){
-      intervalId = setInterval(moveBall, 10); //10밀리초 == 0.01초
-      isSimulatingRunning = true ;
-      }else{
-        alert("reset버튼을 누르시오.")
-
+      if (!isSimulatingRunning) {
+        startTime = window.performance.now(); // 시뮬레이션 시작 시간 저장
+        intervalId = setInterval(moveBall, 10); // 10밀리초 == 0.01초
+        isSimulatingRunning = true ;
+      } else {
+        alert("reset버튼을 누르시오.");
       }
     }
-//                                        밀리초 단위인데, 1초= 1000밀리초
+
     function moveBall() {
-      //velocity += acceleration;
       let left = parseFloat(ball.style.left) || 0;
-      //left += velocity;
-      left += velocity * 0.01 + 1 / 2 * acceleration * 0.01 * 0.01;
-      velocity += acceleration * 0.01;
-      // if (bottom >= container.clientHeight - ball.clientHeight) {
-      //   bottom = container.clientHeight - ball.clientHeight;
-      //   velocity *= -0.9; // 반발력
-      // }
+    //   left += velocity * 0.01 + 1 / 2 * acceleration * 0.01 * 0.01;
+    //   velocity += acceleration * 0.01;
+    //   ball.style.left = left + 'px';
+
+      endTime = window.performance.now(); // 시뮬레이션 종료 시간 저장
+      let elapsedTime = endTime - startTime; // 경과 시간 계산
+      let timeInSeconds = elapsedTime / 1000; // 밀리초를 초로 변환
+      if (left >= 500) {
+        // endTime = window.performance.now(); // 시뮬레이션 종료 시간 저장
+        clearInterval(intervalId);
+        // let elapsedTime = endTime - startTime; // 경과 시간 계산
+        // let timeInSeconds = elapsedTime / 1000; // 밀리초를 초로 변환
+        console.log('걸린 시간:', timeInSeconds);
+      }
+
+      left = 1 / 2 * acceleration * timeInSeconds * timeInSeconds;
+      velocity = acceleration * timeInSeconds;
       ball.style.left = left + 'px';
+
     }
 
     function resetSimulation() {
       clearInterval(intervalId);
-      isSimulatingRunning = false
-      ball.style.left  = '0px';
+      isSimulatingRunning = false;
+      ball.style.left = '0px';
       velocity = 0;
-      clearInterval(intervalId)
     }
   </script>
 </body>
